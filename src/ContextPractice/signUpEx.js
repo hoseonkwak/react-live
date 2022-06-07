@@ -1,17 +1,35 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { createContext, useContext } from "react";
+import { Navigate, BrowserRouter, Route, Routes } from "react-router-dom";
 
-export default function SignUpContext() {
+const IdContext = createContext({ id: '', setId: (id) => { } });
+
+const Hello = () => {
+  const { id, setId } = useContext(IdContext);
+  const handleClickLogout = () => {
+    setId('');
+  }
+  return (
+    <>
+      <div>안녕하세요 {id}님!</div>
+      <button type='button' onClick={handleClickLogout}>로그아웃</button>
+    </>
+  );
+}
+
+const Form = () => {
+  const { setId } = useContext(IdContext);
+  const [inputId, setInputId] = React.useState("");
+  const [inputValue, setInputValue] = React.useState('');
   const idChk = React.useRef(null);
   const pwChk = React.useRef(null);
-  const [id, setId] = React.useState("");
   const [password, setPassword] = React.useState("");
 
   // 클릭
   const handleClick = () => {
-    console.log(id.length || password.length);
-    if (!chkId(id)) {
-      setId("");
+    console.log(inputId.length || password.length);
+    if (!chkId(inputId)) {
+      setInputId("");
       idChk.current?.focus();
       alert("유효하지 않은 ID입니다.");
       return;
@@ -22,13 +40,15 @@ export default function SignUpContext() {
       alert("유효하지 않은 PW입니다.");
       return;
     }
+    setId(inputValue);
     //alert("회원가입 성공!");
   };
 
   //id 변경될 때
   const handleChangeId = (e) => {
     //console.log(e.target.value);
-    setId(e.target.value);
+    setInputId(e.target.value);
+    setInputValue(e.target.value);
   };
 
   // id 체크
@@ -46,31 +66,18 @@ export default function SignUpContext() {
     return props.length >= 12 && props.length <= 20;
   };
 
-  // 버튼
-  const Button = () => {
-    return (
-      <button
-        type="button"
-        onClick={handleClick}
-        disabled={!(id.length || password.length)}
-      >
-        회원가입
-      </button>
-    );
-  };
-
   return (
     <div>
       <div>
         <input
           type="text"
           ref={idChk}
-          value={id}
+          value={inputId}
           name="id"
           placeholder="6글자 이상 20글자 이하"
           onChange={handleChangeId}
         />
-        {chkId(id) ? "" : "유효하지 않은 ID입니다."}
+        {chkId(inputId) ? "" : "유효하지 않은 ID입니다."}
       </div>
       <div>
         <input
@@ -83,14 +90,40 @@ export default function SignUpContext() {
         />
         {chkPw(password) ? "" : "유효하지 않은 PW입니다."}
       </div>
-
-      {chkId(id) && chkPw(password) ? (
-        <Link to={`/signin/${id}`}>
-          <Button />
-        </Link>
-      ) : (
-        <Button />
-      )}
+      <button
+        type="button"
+        onClick={handleClick}
+      >
+        회원가입
+      </button>
     </div>
   );
 }
+
+function SignUpContext() {
+  const [id, setId] = React.useState('');
+  // setId('fastcampus');
+  const contextValue = {
+    id,
+    setId,
+  }
+  return (
+    <IdContext.Provider value={contextValue}>
+      <BrowserRouter>
+        {id ? (
+          <Routes>
+            <Route path="/" element={<Hello />} />
+            <Route path="*" element={<Navigate to='/' replace />} />
+          </Routes>
+        ) : (
+          <Routes>
+            <Route path="/register" element={<Form />} />
+            <Route path="*" element={<Navigate to='/register' replace />} />
+          </Routes>
+        )}
+      </BrowserRouter>
+    </IdContext.Provider>
+  )
+}
+
+export default SignUpContext
