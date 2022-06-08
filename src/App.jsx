@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useMemo, useState } from "react";
+// import React, { createContext, useContext, useMemo, useState } from "react";
+import SignUpReactRedux from "./ReduxEx/SignUpReactRedux";
 // import Prac3 from "./ContextPractice/Prac3";
 // import Prac3_2 from "./ContextPractice/Prac3-2";
 // import SignUpContext from "./ContextPractice/signUpEx";
@@ -9,7 +10,8 @@ import React, { createContext, useContext, useMemo, useState } from "react";
 // import UseRefEx from "./UseRefEx/UseRefEx";
 // import YuHyo from "./UseRefEx/YuHyo";
 
-import Counter from "./ReduxEx/Counter";
+// import Counter from "./ReduxEx/Counter";
+import SignUpRedux from "./ReduxEx/SignUpRedux";
 
 // import UseEffect1 from "./UseEffect/UseEffect1";
 // import UseEffect2 from "./UseEffect/useEffect2";
@@ -69,7 +71,7 @@ const App = () => {
       <NameContext.Provider value={test}>
         <Hello1 />
       </NameContext.Provider> */}
-      <Counter />
+      {/* <Counter /> */}
       {/* <input
         type="text"
         onChange={(e) => {
@@ -84,6 +86,8 @@ const App = () => {
       {/* <SignUpContext /> */}
       {/* <Prac3 /> */}
       {/* <Prac3_2 /> */}
+      <SignUpRedux />
+      {/* <SignUpReactRedux /> */}
     </>
   );
 };

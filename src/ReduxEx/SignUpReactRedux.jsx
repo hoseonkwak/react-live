@@ -1,17 +1,19 @@
 import React from "react";
 import { createContext, useContext } from "react";
 import { Navigate, BrowserRouter, Route, Routes } from "react-router-dom";
-
-const IdContext = createContext({ id: "", setId: (id) => {} });
+import { useDispatch, useSelector } from "react-redux";
+import { stat } from "fs";
 
 const Hello = () => {
-  const { id, setId } = useContext(IdContext);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+
   const handleClickLogout = () => {
-    setId("");
+    dispatch({ type: "LOGOUT" });
   };
   return (
     <>
-      <div>안녕하세요 {id}님!</div>
+      <div>안녕하세요 {user}님!</div>
       <button type="button" onClick={handleClickLogout}>
         로그아웃
       </button>
@@ -20,12 +22,13 @@ const Hello = () => {
 };
 
 const Form = () => {
-  const { setId } = useContext(IdContext);
   const [inputId, setInputId] = React.useState("");
   const [inputValue, setInputValue] = React.useState("");
   const idChk = React.useRef(null);
   const pwChk = React.useRef(null);
   const [password, setPassword] = React.useState("");
+
+  const dispatch = useDispatch();
 
   // 클릭
   const handleClick = () => {
@@ -42,7 +45,7 @@ const Form = () => {
       alert("유효하지 않은 PW입니다.");
       return;
     }
-    setId(inputValue);
+    dispatch({ type: "LOGIN", payload: inputValue });
     //alert("회원가입 성공!");
   };
 
@@ -99,30 +102,25 @@ const Form = () => {
   );
 };
 
-function SignUpContext() {
-  const [id, setId] = React.useState("");
+function SignUpReactRedux() {
+  const userId = useSelector((state) => state.user);
   // setId('fastcampus');
-  const contextValue = {
-    id,
-    setId,
-  };
+
   return (
-    <IdContext.Provider value={contextValue}>
-      <BrowserRouter>
-        {id ? (
-          <Routes>
-            <Route path="/" element={<Hello />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        ) : (
-          <Routes>
-            <Route path="/register" element={<Form />} />
-            <Route path="*" element={<Navigate to="/register" replace />} />
-          </Routes>
-        )}
-      </BrowserRouter>
-    </IdContext.Provider>
+    <BrowserRouter>
+      {userId ? (
+        <Routes>
+          <Route path="/" element={<Hello />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      ) : (
+        <Routes>
+          <Route path="/register" element={<Form />} />
+          <Route path="*" element={<Navigate to="/register" replace />} />
+        </Routes>
+      )}
+    </BrowserRouter>
   );
 }
 
-export default SignUpContext;
+export default SignUpReactRedux;

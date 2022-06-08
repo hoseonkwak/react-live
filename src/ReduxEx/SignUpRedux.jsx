@@ -1,13 +1,14 @@
 import React from "react";
 import { createContext, useContext } from "react";
 import { Navigate, BrowserRouter, Route, Routes } from "react-router-dom";
+import store from "./store2";
 
-const IdContext = createContext({ id: "", setId: (id) => {} });
-
-const Hello = () => {
-  const { id, setId } = useContext(IdContext);
+const Hello = ({ id, dispatchAndUpdateState }) => {
   const handleClickLogout = () => {
-    setId("");
+    // console.log("action 객체 전송!: ");
+    dispatchAndUpdateState({
+      type: "LOGOUT",
+    });
   };
   return (
     <>
@@ -19,8 +20,7 @@ const Hello = () => {
   );
 };
 
-const Form = () => {
-  const { setId } = useContext(IdContext);
+const Form = ({ dispatchAndUpdateState }) => {
   const [inputId, setInputId] = React.useState("");
   const [inputValue, setInputValue] = React.useState("");
   const idChk = React.useRef(null);
@@ -29,7 +29,7 @@ const Form = () => {
 
   // 클릭
   const handleClick = () => {
-    console.log(inputId.length || password.length);
+    // console.log(inputId.length || password.length);
     if (!chkId(inputId)) {
       setInputId("");
       idChk.current?.focus();
@@ -42,7 +42,8 @@ const Form = () => {
       alert("유효하지 않은 PW입니다.");
       return;
     }
-    setId(inputValue);
+    // 임의의 데이터를 넘기고 싶으면 payload로 보낸다.
+    dispatchAndUpdateState({ type: "LOGIN", payload: inputValue });
     //alert("회원가입 성공!");
   };
 
@@ -99,30 +100,37 @@ const Form = () => {
   );
 };
 
-function SignUpContext() {
-  const [id, setId] = React.useState("");
-  // setId('fastcampus');
-  const contextValue = {
-    id,
-    setId,
+function SignUpRedux() {
+  const [id, setId] = React.useState(store.getState().user);
+  const dispatchAndUpdateState = (action) => {
+    // 회원가입 버튼을 클릭하면 action에 { type: "LOGIN", payload: inputValue }가 들어온다.
+    store.dispatch(action); // reducer로 전송
+    setId(store.getState().user); // 현재 user에 담겨있는 id를 set
   };
+
   return (
-    <IdContext.Provider value={contextValue}>
-      <BrowserRouter>
-        {id ? (
-          <Routes>
-            <Route path="/" element={<Hello />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        ) : (
-          <Routes>
-            <Route path="/register" element={<Form />} />
-            <Route path="*" element={<Navigate to="/register" replace />} />
-          </Routes>
-        )}
-      </BrowserRouter>
-    </IdContext.Provider>
+    <BrowserRouter>
+      {id ? (
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Hello id={id} dispatchAndUpdateState={dispatchAndUpdateState} />
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      ) : (
+        <Routes>
+          <Route
+            path="/register"
+            element={<Form dispatchAndUpdateState={dispatchAndUpdateState} />}
+          />
+          <Route path="*" element={<Navigate to="/register" replace />} />
+        </Routes>
+      )}
+    </BrowserRouter>
   );
 }
 
-export default SignUpContext;
+export default SignUpRedux;
