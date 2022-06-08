@@ -1,5 +1,6 @@
 // import React, { createContext, useContext, useMemo, useState } from "react";
-import SignUpReactRedux from "./ReduxEx/SignUpReactRedux";
+import MiddelPrac1 from "./MiddlewareEx/prac1";
+// import SignUpReactRedux from "./ReduxEx/SignUpReactRedux";
 // import Prac3 from "./ContextPractice/Prac3";
 // import Prac3_2 from "./ContextPractice/Prac3-2";
 // import SignUpContext from "./ContextPractice/signUpEx";
@@ -11,7 +12,7 @@ import SignUpReactRedux from "./ReduxEx/SignUpReactRedux";
 // import YuHyo from "./UseRefEx/YuHyo";
 
 // import Counter from "./ReduxEx/Counter";
-import SignUpRedux from "./ReduxEx/SignUpRedux";
+// import SignUpRedux from "./ReduxEx/SignUpRedux";
 
 // import UseEffect1 from "./UseEffect/UseEffect1";
 // import UseEffect2 from "./UseEffect/useEffect2";
@@ -86,8 +87,9 @@ const App = () => {
       {/* <SignUpContext /> */}
       {/* <Prac3 /> */}
       {/* <Prac3_2 /> */}
-      <SignUpRedux />
+      {/* <SignUpRedux /> */}
       {/* <SignUpReactRedux /> */}
+      <MiddelPrac1 />
     </>
   );
 };
